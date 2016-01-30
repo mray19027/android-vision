@@ -47,6 +47,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private Paint mFacePositionPaint;
     private Paint mIdPaint;
     private Paint mBoxPaint;
+    private Paint mCustomPaint;
 
     private volatile Face mFace;
     private int mFaceId;
@@ -64,6 +65,10 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         mIdPaint = new Paint();
         mIdPaint.setColor(selectedColor);
         mIdPaint.setTextSize(ID_TEXT_SIZE);
+
+        mCustomPaint = new Paint();
+        mCustomPaint.setColor(selectedColor);
+        mCustomPaint.setStrokeWidth(10);
 
         mBoxPaint = new Paint();
         mBoxPaint.setColor(selectedColor);
@@ -98,6 +103,11 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         // Draws a circle at the position of the detected face, with the face's track id below.
         float x = translateX(face.getPosition().x + face.getWidth() / 2);
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
+        for (int i=0; i<face.getLandmarks().size(); i++) {
+            float x_landmark = translateX(face.getLandmarks().get(i).getPosition().x);
+            float y_landmark = translateY(face.getLandmarks().get(i).getPosition().y);
+            canvas.drawPoint(x_landmark,y_landmark,mCustomPaint);
+        }
         canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
         canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
         canvas.drawText("happiness: " + String.format("%.2f", face.getIsSmilingProbability()), x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
